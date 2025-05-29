@@ -6,6 +6,7 @@ import com.bookstore.warp_bookstore.model.Book;
 import com.bookstore.warp_bookstore.dto.BookRequest;
 import com.bookstore.warp_bookstore.repository.BookRepository;
 import com.bookstore.warp_bookstore.service.BookService;
+import com.bookstore.warp_bookstore.util.BookMapper;
 import com.bookstore.warp_bookstore.util.IsbnGenerator;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -40,12 +41,7 @@ public class BookServiceImpl implements BookService {
 
         Book savedBook = bookRepository.save(book);
 
-        return new BookResponse(
-                savedBook.getId(),
-                savedBook.getTitle(),
-                savedBook.getAuthor(),
-                savedBook.getIsbn()
-        );
+        return BookMapper.toBookResponse(savedBook);
     }
 
     @Override
@@ -57,8 +53,7 @@ public class BookServiceImpl implements BookService {
         book.setAuthor(updatedBookRequest.getAuthor());
 
         Book updatedBook = bookRepository.save(book);
-        return mapToBookResponse(updatedBook);
-    }
+        return BookMapper.toBookResponse(updatedBook);    }
 
     @Override
     public void deleteBook(Long id) {
@@ -72,25 +67,16 @@ public class BookServiceImpl implements BookService {
     public BookResponse findBookById(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
-        return mapToBookResponse(book);
-    }
+        return BookMapper.toBookResponse(book);    }
 
     @Override
     public List<BookResponse> findAllBooks() {
         List<Book> books = bookRepository.findAll();
         return books.stream()
-                .map(this::mapToBookResponse)
+                .map(BookMapper::toBookResponse)
                 .collect(Collectors.toList());
     }
 
-    private BookResponse mapToBookResponse(Book book) {
-        return new BookResponse(
-                book.getId(),
-                book.getTitle(),
-                book.getAuthor(),
-                book.getIsbn()
-        );
-    }
 
 }
 
