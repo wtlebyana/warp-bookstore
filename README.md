@@ -57,8 +57,8 @@ spring.jpa.show-sql=true
 
 Running the Application 
 ## Build and Run with Maven
--Open a terminal, navigate to your project root, then run:
-mvn spring-boot:run
+- Open a terminal, navigate to your project root, then run:
+- mvn spring-boot:run
 
 ## Build a Jar and Run
 - mvn clean package
