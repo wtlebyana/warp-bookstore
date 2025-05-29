@@ -1,29 +1,29 @@
 package com.bookstore.warp_bookstore.service.Impl;
 
+import com.bookstore.warp_bookstore.dto.BookRequest;
 import com.bookstore.warp_bookstore.dto.BookResponse;
 import com.bookstore.warp_bookstore.exception.ResourceNotFoundException;
+import com.bookstore.warp_bookstore.mapper.BookMapper;
 import com.bookstore.warp_bookstore.model.Book;
-import com.bookstore.warp_bookstore.dto.BookRequest;
 import com.bookstore.warp_bookstore.repository.BookRepository;
 import com.bookstore.warp_bookstore.service.BookService;
-import com.bookstore.warp_bookstore.util.BookMapper;
 import com.bookstore.warp_bookstore.util.IsbnGenerator;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
-@NoArgsConstructor
 public class BookServiceImpl implements BookService {
 
-    @Autowired
     private BookRepository bookRepository;
+    private final BookMapper bookMapper;
+
+    public BookServiceImpl(BookRepository bookRepository, BookMapper bookMapper) {
+        this.bookRepository = bookRepository;
+        this.bookMapper = bookMapper;
+    }
 
     @Override
     @Transactional
@@ -41,7 +41,7 @@ public class BookServiceImpl implements BookService {
 
         Book savedBook = bookRepository.save(book);
 
-        return BookMapper.toBookResponse(savedBook);
+        return bookMapper.toBookResponse(savedBook);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class BookServiceImpl implements BookService {
         book.setAuthor(updatedBookRequest.getAuthor());
 
         Book updatedBook = bookRepository.save(book);
-        return BookMapper.toBookResponse(updatedBook);    }
+        return bookMapper.toBookResponse(updatedBook);    }
 
     @Override
     public void deleteBook(Long id) {
@@ -67,13 +67,13 @@ public class BookServiceImpl implements BookService {
     public BookResponse findBookById(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
-        return BookMapper.toBookResponse(book);    }
+        return bookMapper.toBookResponse(book);    }
 
     @Override
     public List<BookResponse> findAllBooks() {
         List<Book> books = bookRepository.findAll();
         return books.stream()
-                .map(BookMapper::toBookResponse)
+                .map(bookMapper::toBookResponse)
                 .collect(Collectors.toList());
     }
 
