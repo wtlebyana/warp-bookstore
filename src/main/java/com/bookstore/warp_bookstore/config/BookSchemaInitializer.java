@@ -4,6 +4,8 @@ import com.bookstore.warp_bookstore.dto.BookRequest;
 import com.bookstore.warp_bookstore.dto.BookResponse;
 import com.bookstore.warp_bookstore.service.BookService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 
 import org.springframework.context.annotation.Bean;
@@ -14,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 public class BookSchemaInitializer {
+    private static final Logger log = LoggerFactory.getLogger(BookSchemaInitializer.class);
 
     @Bean
     CommandLineRunner initBookSchemaConfig(BookService bookService) {
