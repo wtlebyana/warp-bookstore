@@ -1,8 +1,9 @@
 package com.bookstore.warp_bookstore.controller;
 
 
+import com.bookstore.warp_bookstore.dto.BookRequest;
+import com.bookstore.warp_bookstore.dto.BookResponse;
 import com.bookstore.warp_bookstore.exception.ResourceNotFoundException;
-import com.bookstore.warp_bookstore.model.Book;
 import com.bookstore.warp_bookstore.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -11,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -24,9 +24,9 @@ public class BookController {
 
     @Operation(summary = "Save a new book")
     @PostMapping("/save")
-    public ResponseEntity<?> save(@Valid @RequestBody Book book) {
+    public ResponseEntity<?> save(@Valid @RequestBody BookRequest bookRequest) {
         try {
-            Book savedBook = bookService.saveBook(book);
+            BookResponse savedBook = bookService.saveBook(bookRequest);
             return ResponseEntity.status(HttpStatus.CREATED).body(
                     Map.of(
                             "message", "Book saved successfully",
@@ -36,15 +36,18 @@ public class BookController {
         } catch (IllegalStateException ex) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Map.of("message", ex.getMessage()));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "An unexpected error occurred"));
         }
     }
 
     @Operation(summary = "Update Book by id")
     @PutMapping("/updateBook/{id}")
-    public ResponseEntity<?> updateBook(@PathVariable Long id, @Valid @RequestBody Book book) {
+    public ResponseEntity<?> updateBook(@PathVariable Long id, @Valid @RequestBody BookRequest bookRequest) {
         try {
-            Book updatedBook = bookService.updateBook(id, book);
-            return ResponseEntity.ok().body(
+            BookResponse updatedBook = bookService.updateBook(id, bookRequest);
+            return ResponseEntity.ok(
                     Map.of(
                             "message", "Book updated successfully",
                             "book", updatedBook
@@ -53,6 +56,9 @@ public class BookController {
         } catch (ResourceNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("message", ex.getMessage()));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "An unexpected error occurred"));
         }
     }
 
@@ -60,18 +66,23 @@ public class BookController {
     @GetMapping("/findBookById/{id}")
     public ResponseEntity<?> findBookById(@PathVariable Long id) {
         try {
-            Book book = bookService.findBookById(id);
-            return ResponseEntity.ok().body(book);
+            BookResponse book = bookService.findBookById(id);
+            return ResponseEntity.ok(
+                    Map.of(
+                            "message", "Book retrieved successfully",
+                            "book", book
+                    )
+            );
         } catch (ResourceNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Collections.singletonMap("message", ex.getMessage()));
+                    .body(Map.of("message", ex.getMessage()));
         }
     }
 
     @Operation(summary = "find All Books")
     @GetMapping("/books/findAllBooks")
     public ResponseEntity<?> findAllBooks() {
-        List<Book> books = bookService.findAllBooks();
+        List<BookResponse> books = bookService.findAllBooks();
         return ResponseEntity.ok(
                 Map.of(
                         "message", "Books retrieved successfully",
@@ -82,9 +93,11 @@ public class BookController {
 
     @Operation(summary = "Delete book by Id")
     @DeleteMapping("/deleteBookById/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> delete(@PathVariable Long id) {
         bookService.deleteBook(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(
+                Map.of("bookId", id, "message", "Book deleted successfully")
+        );
     }
 
 }

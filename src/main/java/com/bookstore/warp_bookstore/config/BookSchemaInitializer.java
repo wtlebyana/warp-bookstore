@@ -1,25 +1,31 @@
 package com.bookstore.warp_bookstore.config;
 
-import com.bookstore.warp_bookstore.model.Book;
+import com.bookstore.warp_bookstore.dto.BookRequest;
+import com.bookstore.warp_bookstore.dto.BookResponse;
 import com.bookstore.warp_bookstore.service.BookService;
+
 import org.springframework.boot.CommandLineRunner;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Configuration
 public class BookSchemaInitializer {
 
     @Bean
     CommandLineRunner initBookSchemaConfig(BookService bookService) {
         return args -> {
-            Book book = new Book();
-            book.setTitle("Initial Start Up Book");
-            book.setAuthor("MR T");
+            BookRequest bookRequest = new BookRequest();
+            bookRequest.setTitle("Initial Start Up Book");
+            bookRequest.setAuthor("MR T");
+
             try {
-                bookService.saveBook(book);
-                System.out.println("Book created on start up");
+                BookResponse saved = bookService.saveBook(bookRequest);
             } catch (Exception e) {
-                System.out.println("Book already exists or could not be added");
+                log.error("Unexpected error inserting book on startup", e);
             }
         };
     }
