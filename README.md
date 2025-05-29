@@ -43,8 +43,8 @@ cd warp-bookstore
 ```
 ## Configuration
 
-The application uses PostgreSQL's default `postgres` database.
-NB: Update these in `src/main/resources/application.properties` if needed:
+- The application uses PostgreSQL's default `postgres` database.
+- NB: Update these in `src/main/resources/application.properties` if needed:
 
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/postgres
