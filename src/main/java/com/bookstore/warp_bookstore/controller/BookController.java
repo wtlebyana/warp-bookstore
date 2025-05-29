@@ -23,7 +23,7 @@ public class BookController {
     private BookService bookService;
 
     @Operation(summary = "Save a new book")
-    @PostMapping("/books/save")
+    @PostMapping("/save")
     public ResponseEntity<?> save(@Valid @RequestBody Book book) {
         try {
             Book savedBook = bookService.saveBook(book);
@@ -69,7 +69,7 @@ public class BookController {
     }
 
     @Operation(summary = "find All Books")
-    @GetMapping("/books/findAll")
+    @GetMapping("/books/findAllBooks")
     public ResponseEntity<?> findAllBooks() {
         List<Book> books = bookService.findAllBooks();
         return ResponseEntity.ok(

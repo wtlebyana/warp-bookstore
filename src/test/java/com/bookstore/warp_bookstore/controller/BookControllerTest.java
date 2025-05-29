@@ -45,7 +45,7 @@ class BookControllerTest {
     void testCreateBook() throws Exception {
         Mockito.when(bookService.saveBook(any(Book.class))).thenReturn(book);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/books/save")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(book)))
                 .andExpect(status().isCreated())
@@ -83,7 +83,7 @@ class BookControllerTest {
         List<Book> books = Arrays.asList(book, book);
         Mockito.when(bookService.findAllBooks()).thenReturn(books);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/books/findAll"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/books/findAllBooks"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Books retrieved successfully"))
                 .andExpect(jsonPath("$.books", hasSize(2)))

@@ -13,7 +13,7 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("Warp Book Store API")
-                        .description("API documentation for the WARP Java Engineer Assessment Project")
+                        .description("API documentation for Warp Java Engineer Assessment Project")
                         .version("1.0.0"));
     }
 }
