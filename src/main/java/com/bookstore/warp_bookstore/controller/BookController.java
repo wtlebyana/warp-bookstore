@@ -4,6 +4,7 @@ package com.bookstore.warp_bookstore.controller;
 import com.bookstore.warp_bookstore.exception.ResourceNotFoundException;
 import com.bookstore.warp_bookstore.model.Book;
 import com.bookstore.warp_bookstore.service.BookService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
+    @Operation(summary = "Save a new book")
     @PostMapping("/books/save")
     public ResponseEntity<?> save(@Valid @RequestBody Book book) {
         try {
@@ -37,6 +39,7 @@ public class BookController {
         }
     }
 
+    @Operation(summary = "Update Book by id")
     @PutMapping("/updateBook/{id}")
     public ResponseEntity<?> updateBook(@PathVariable Long id, @Valid @RequestBody Book book) {
         try {
@@ -53,6 +56,7 @@ public class BookController {
         }
     }
 
+    @Operation(summary = "find Book by Id")
     @GetMapping("/findBookById/{id}")
     public ResponseEntity<?> findBookById(@PathVariable Long id) {
         try {
@@ -64,6 +68,7 @@ public class BookController {
         }
     }
 
+    @Operation(summary = "find All Books")
     @GetMapping("/books/findAll")
     public ResponseEntity<?> findAllBooks() {
         List<Book> books = bookService.findAllBooks();
@@ -75,6 +80,7 @@ public class BookController {
         );
     }
 
+    @Operation(summary = "Delete book by Id")
     @DeleteMapping("/deleteBookById/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         bookService.deleteBook(id);
