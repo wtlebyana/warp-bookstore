@@ -2,6 +2,7 @@ package com.bookstore.warp_bookstore.service;
 
 import com.bookstore.warp_bookstore.dto.BookResponse;
 import com.bookstore.warp_bookstore.exception.ResourceNotFoundException;
+import com.bookstore.warp_bookstore.mapper.BookMapper;
 import com.bookstore.warp_bookstore.model.Book;
 import com.bookstore.warp_bookstore.dto.BookRequest;
 import com.bookstore.warp_bookstore.repository.BookRepository;
@@ -24,6 +25,9 @@ class BookServiceImplTest {
     private BookRepository bookRepository;
     @InjectMocks
     private BookServiceImpl bookService;
+    @Mock
+    private BookMapper bookMapper;
+
     private Book book;
 
     @BeforeEach
@@ -51,6 +55,16 @@ class BookServiceImplTest {
             return bookArg;
         });
 
+        when(bookMapper.toBookResponse(any(Book.class))).thenAnswer(invocation -> {
+            Book bookArg = invocation.getArgument(0);
+            return new BookResponse(
+                    bookArg.getId(),
+                    bookArg.getTitle(),
+                    bookArg.getAuthor(),
+                    bookArg.getIsbn()
+            );
+        });
+
         BookResponse savedBook = bookService.saveBook(bookRequest);
 
         assertNotNull(savedBook);
@@ -62,7 +76,6 @@ class BookServiceImplTest {
         verify(bookRepository).save(any(Book.class));
     }
 
-
     @Test
     void testUpdateBook() {
 
@@ -71,7 +84,17 @@ class BookServiceImplTest {
         updateRequest.setAuthor("THABANG");
 
         when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-        when(bookRepository.save(any(Book.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(bookRepository.save(any(Book.class))).thenAnswer(
+                invocation -> invocation.getArgument(0));
+        when(bookMapper.toBookResponse(any(Book.class))).thenAnswer(invocation -> {
+            Book b = invocation.getArgument(0);
+            return new BookResponse(
+                    b.getId(),
+                    b.getTitle(),
+                    b.getAuthor(),
+                    b.getIsbn()
+            );
+        });
 
         BookResponse result = bookService.updateBook(1L, updateRequest);
 
@@ -82,6 +105,7 @@ class BookServiceImplTest {
 
         verify(bookRepository).save(any(Book.class));
     }
+
 
 
     @Test
@@ -107,10 +131,22 @@ class BookServiceImplTest {
 
     @Test
     void testGetBookById() {
+
+        Book book = new Book(1L,
+                "WARP JAVA ENGINEER ASSESSMENT",
+                "WILLIAM",
+                "9780306406157");
+
+        BookResponse bookResponse = new BookResponse(1L,
+                "WARP JAVA ENGINEER ASSESSMENT",
+                "WILLIAM",
+                "9780306406157");
+
         when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
+        when(bookMapper.toBookResponse(book)).thenReturn(bookResponse);
+
         BookResponse found = bookService.findBookById(1L);
 
-        assertNotNull(found);
         assertEquals(1L, found.getId());
         assertEquals("WARP JAVA ENGINEER ASSESSMENT", found.getTitle());
         assertEquals("WILLIAM", found.getAuthor());
@@ -128,9 +164,20 @@ class BookServiceImplTest {
     void testFindAllBooks() {
         List<Book> books = List.of(book, book);
         when(bookRepository.findAll()).thenReturn(books);
+        when(bookMapper.toBookResponse(any(Book.class))).thenAnswer(invocation -> {
+            Book book = invocation.getArgument(0);
+            return new BookResponse(
+                    book.getId(),
+                    book.getTitle(),
+                    book.getAuthor(),
+                    book.getIsbn()
+            );
+        });
 
         List<BookResponse> allBooks = bookService.findAllBooks();
 
+        assertNotNull(allBooks);
+        assertEquals(2, allBooks.size());
         assertThat(allBooks).hasSize(2);
         assertThat(allBooks.get(0).getTitle()).isEqualTo(book.getTitle());
         assertThat(allBooks.get(1).getTitle()).isEqualTo(book.getTitle());
