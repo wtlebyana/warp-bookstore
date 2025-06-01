@@ -3,7 +3,7 @@ package com.bookstore.warp_bookstore.service.Impl;
 import com.bookstore.warp_bookstore.dto.BookRequest;
 import com.bookstore.warp_bookstore.dto.BookResponse;
 import com.bookstore.warp_bookstore.exception.ResourceNotFoundException;
-import com.bookstore.warp_bookstore.mapper.BookMapper;
+import com.bookstore.warp_bookstore.model.mapper.BookMapper;
 import com.bookstore.warp_bookstore.model.Book;
 import com.bookstore.warp_bookstore.repository.BookRepository;
 import com.bookstore.warp_bookstore.service.BookService;

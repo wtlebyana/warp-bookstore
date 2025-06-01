@@ -1,4 +1,4 @@
-package com.bookstore.warp_bookstore.mapper;
+package com.bookstore.warp_bookstore.model.mapper;
 
 import com.bookstore.warp_bookstore.dto.BookResponse;
 import com.bookstore.warp_bookstore.model.Book;
