@@ -58,20 +58,25 @@ spring.jpa.show-sql=true
 Running the Application 
 ## Build and Run with Maven
 - cd warp-bookstore, then run
+```bash
 - mvn clean install
-
 - mvn spring-boot:run
-
+```
 ## Build a Jar and Run
+```bash
 - mvn clean package
-
+```
 Then run it with:
+```bash
 - java -jar target/warp-bookstore-0.0.1-SNAPSHOT.jar
-
+```
 ## Access the Application
 
 - The REST API will be available at:
-  - http://localhost:8080/api/v1/
-
+```bash
+- http://localhost:8080/api/v1/
+```
 ## Swagger UI for interactive API documentation is at:
+```bash
   - http://localhost:8080/swagger-ui/index.html
+```
